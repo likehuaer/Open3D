@@ -69,6 +69,7 @@ public:
            const Device& device = Device("CPU:0"))
         : Tensor(shape, dtype, device) {
         // Check number of elements
+
         if (static_cast<int64_t>(init_vals.size()) != shape_.NumElements()) {
             utility::LogError(
                     "Tensor initialization values' size {} does not match the "
@@ -434,6 +435,10 @@ public:
     ///
     /// 0-D and 1-D Tensor remains the same.
     Tensor T() const;
+
+    /// \brief Expects input to be 3x3 Matrix.
+    /// \return returns the determinant of the matrix (double).
+    double Det() const;
 
     /// Helper function to return scalar value of a scalar Tensor, the Tensor
     /// mush have empty shape ()
@@ -1011,6 +1016,9 @@ public:
 
     /// Assert that the Tensor has the specified device.
     void AssertDevice(const Device& expected_device) const;
+
+    /// Assert that the Tensor has the specified dtype.
+    void AssertDtype(const Dtype& expected_dtype) const;
 
 protected:
     std::string ScalarPtrToString(const void* ptr) const;
