@@ -3,7 +3,7 @@ ARG UBUNTU_VERSION
 FROM ubuntu:${UBUNTU_VERSION}
 # Persist ARG for the rest of the build
 ARG UBUNTU_VERSION
-ARG NVIDIA_DRIVER_VERSION=440
+ARG NVIDIA_DRIVER_VERSION=455
 LABEL name="open3d-dev/open3d-gpu-ci-${UBUNTU_VERSION}" \
             vendor="open3d.org" \
             architecture="x86_64" \
