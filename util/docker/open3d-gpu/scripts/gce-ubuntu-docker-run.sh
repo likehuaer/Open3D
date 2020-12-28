@@ -130,8 +130,8 @@ create-vm)
                 --boot-disk-type=$GCE_BOOT_DISK_TYPE \
                 --image-family="$GCE_VM_CUSTOM_IMAGE_FAMILY" \
                 --service-account="$GCE_GPU_CI_SA" \
-                --scopes=compute-rw \  # Allow GCE control for self-deletion
-        --metadata=startup-script="\
+                --scopes=compute-rw \
+                --metadata=startup-script="\
                 sleep ${GCE_CI_TIMEOUT};\
                 gcloud --quiet compute instances delete ${GCE_INSTANCE} \
                 --zone=${GCE_INSTANCE_ZONE[$GCE_ZID]}"
