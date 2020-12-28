@@ -130,7 +130,7 @@ create-vm)
                 --boot-disk-type=$GCE_BOOT_DISK_TYPE \
                 --image-family="$GCE_VM_CUSTOM_IMAGE_FAMILY" \
                 --service-account="$GCE_GPU_CI_SA" \
-                --scopes=compute-rw \
+                --scopes=default,compute-rw \
                 --metadata=startup-script="\
                 sleep ${GCE_CI_TIMEOUT};\
                 gcloud --quiet compute instances delete ${GCE_INSTANCE} \
