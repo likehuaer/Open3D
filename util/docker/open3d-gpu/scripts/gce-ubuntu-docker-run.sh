@@ -119,20 +119,23 @@ create-base-vm-image)
 
 create-vm)
     # Try creating a VM instance in each zone
-    until ((GCE_ZID >= ${#GCE_INSTANCE_ZONE[@]})) ||
-        gcloud compute instances create "$GCE_INSTANCE" \
-            --zone="${GCE_INSTANCE_ZONE[$GCE_ZID]}" \
-            --accelerator="$GCE_GPU" \
-            --maintenance-policy=TERMINATE \
-            --machine-type=$GCE_INSTANCE_TYPE \
-            --boot-disk-size=$GCE_BOOT_DISK_SIZE \
-            --boot-disk-type=$GCE_BOOT_DISK_TYPE \
-            --image-family="$GCE_VM_CUSTOM_IMAGE_FAMILY" \
-            --service-account="$GCE_GPU_CI_SA" \
-            --metadata=startup-script="\
-            sleep ${GCE_CI_TIMEOUT}; \
-            gcloud --quiet compute instances delete ${GCE_INSTANCE} \
-            --zone=${GCE_INSTANCE_ZONE[$GCE_ZID]}"; do
+    until
+        ((GCE_ZID >= ${#GCE_INSTANCE_ZONE[@]})) ||
+            gcloud compute instances create "$GCE_INSTANCE" \
+                --zone="${GCE_INSTANCE_ZONE[$GCE_ZID]}" \
+                --accelerator="$GCE_GPU" \
+                --maintenance-policy=TERMINATE \
+                --machine-type=$GCE_INSTANCE_TYPE \
+                --boot-disk-size=$GCE_BOOT_DISK_SIZE \
+                --boot-disk-type=$GCE_BOOT_DISK_TYPE \
+                --image-family="$GCE_VM_CUSTOM_IMAGE_FAMILY" \
+                --service-account="$GCE_GPU_CI_SA" \
+                --scopes=compute-rw \  # Allow GCE control for self-deletion
+        --metadata=startup-script="\
+                sleep ${GCE_CI_TIMEOUT};\
+                gcloud --quiet compute instances delete ${GCE_INSTANCE} \
+                --zone=${GCE_INSTANCE_ZONE[$GCE_ZID]}"
+    do
         ((GCE_ZID = GCE_ZID + 1))
     done
     sleep 30 # wait for instance ssh service startup

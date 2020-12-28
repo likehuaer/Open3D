@@ -5,12 +5,6 @@ set -euo pipefail
 # shellcheck source=ci_utils.sh
 source "$(dirname "$0")"/ci_utils.sh
 
-if nvidia-smi; then
-    echo
-    echo Execute for GPU!
-    echo
-fi
-
 echo "nproc = $(getconf _NPROCESSORS_ONLN) NPROC = ${NPROC}"
 
 if [ "$BUILD_CUDA_MODULE" == "ON" ] &&
@@ -34,23 +28,24 @@ python -m pytest --version
 echo "using cmake: $(which cmake)"
 cmake --version
 
-build_all
-
-echo "Building examples iteratively..."
-make VERBOSE=1 -j"$NPROC" build-examples-iteratively
-echo
-
-echo "running Open3D C++ unit tests..."
-run_cpp_unit_tests
+# build_all
+#
+# echo "Building examples iteratively..."
+# make VERBOSE=1 -j"$NPROC" build-examples-iteratively
+# echo
+#
+# echo "running Open3D C++ unit tests..."
+# run_cpp_unit_tests
 
 # Run on GPU only. CPU versions run on Github already
-if nvidia-smi; then
-    echo "try importing Open3D Python package"
-    test_wheel lib/python_package/pip_package/open3d*.whl
-    echo "running Open3D Python tests..."
-    run_python_tests
-    echo
-fi
+# if nvidia-smi; then
+echo "try importing Open3D Python package"
+# test_wheel lib/python_package/pip_package/open3d*.whl
+test_wheel open3d
+echo "running Open3D Python tests..."
+run_python_tests
+echo
+# fi
 
 echo "Test building a C++ example with installed Open3D..."
 test_cpp_example "${runExample:=ON}"
