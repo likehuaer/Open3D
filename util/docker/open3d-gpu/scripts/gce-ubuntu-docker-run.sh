@@ -49,7 +49,7 @@ GCE_VM_BASE_OS=ubuntu20.04
 GCE_VM_IMAGE_SPEC=(--image-project=ubuntu-os-cloud --image-family=ubuntu-2004-lts)
 GCE_VM_CUSTOM_IMAGE_FAMILY=ubuntu-os-docker-gpu-2004-lts
 VM_IMAGE=open3d-gpu-ci-base-$(date +%Y%m%d)
-GCE_CI_TIMEOUT=720 # Self delete VM after timeout
+GCE_CI_TIMEOUT=3600 # Self delete VM after timeout (seconds)
 
 # Container configuration
 REGISTRY_HOSTNAME=gcr.io
