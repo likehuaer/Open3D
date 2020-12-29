@@ -9,6 +9,7 @@ set -e
 ## These variables should be in the environment (from github repo secrets)
 # GCE_PROJECT
 # GCE_GPU_CI_SA
+# OPEN3D_ML_ROOT
 ## GITHUB environment
 # GITHUB_SHA
 ## CI test matrix:
@@ -74,6 +75,7 @@ docker-build)
         -f util/docker/open3d-gpu/Dockerfile \
         --build-arg UBUNTU_VERSION="$UBUNTU_VERSION" \
         --build-arg NVIDIA_DRIVER_VERSION="${NVIDIA_DRIVER_VERSION}" \
+        --build-arg OPEN3D_ML_ROOT="${OPEN3D_ML_ROOT}" \
         .
     docker tag "$DC_IMAGE_TAG" "$DC_IMAGE_LATEST_TAG"
     ;;
