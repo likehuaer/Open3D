@@ -321,7 +321,9 @@ build_pip_conda_package() {
 # Usage: test_wheel wheel_path
 test_wheel() {
     wheel_path="$1"
+    set +u # venv activate can trigger bash unbound variable error
     python -m venv open3d_test.venv
+    # shellcheck disable=SC1091
     source open3d_test.venv/bin/activate
     python -m pip install --upgrade pip=="$PIP_VER" wheel=="$WHEEL_VER" \
         setuptools=="$STOOLS_VER"
@@ -359,6 +361,8 @@ test_wheel() {
 
 # Run in virtual environment
 run_python_tests() {
+    set +u # venv activate can trigger bash unbound variable error
+    # shellcheck disable=SC1091
     source open3d_test.venv/bin/activate
     python -m pip install -U pytest=="$PYTEST_VER"
     python -m pip install -U scipy=="$SCIPY_VER"
