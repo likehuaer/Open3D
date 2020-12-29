@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+options="$(echo "$@" | tr ' ' '|')"
 
 # Get build scripts and control environment variables
 # shellcheck source=ci_utils.sh
@@ -8,7 +9,7 @@ source "$(dirname "$0")"/ci_utils.sh
 echo "nproc = $(getconf _NPROCESSORS_ONLN) NPROC = ${NPROC}"
 
 if [ "$BUILD_CUDA_MODULE" == "ON" ] &&
-    ! nvcc --version | grep -q "release ${CUDA_VERSION[1]}" 2>/dev/null; then
+    ! nvcc --version 2>/dev/null | grep -q "release ${CUDA_VERSION[1]}"; then
     install_cuda_toolkit with-cudnn purge-cache
     nvcc --version
 fi
@@ -37,13 +38,14 @@ echo
 echo "Running Open3D C++ unit tests..."
 run_cpp_unit_tests
 
-# Run on GPU only. CPU versions run on Github in a separate step
-if which nvidia-smi && nvidia-smi -q; then
-    echo "try importing Open3D Python package"
+if [[ "test-python" =~ ^($options)$ ]]; then
+    echo "Try importing Open3D Python package"
     test_wheel lib/python_package/pip_package/open3d*.whl
-    echo "running Open3D Python tests..."
+    echo "Running Open3D Python tests..."
     run_python_tests
     echo
+else
+    echo "Skipping Python tests..."
 fi
 
 echo "Test building a C++ example with installed Open3D..."

@@ -47,7 +47,8 @@ GCE_BOOT_DISK_SIZE=32GB
 NVIDIA_DRIVER_VERSION=455 # Must be present in Ubuntu repos 20.04: {390, 418, 430, 435, 440, 450, 455}
 GCE_VM_BASE_OS=ubuntu20.04
 GCE_VM_IMAGE_SPEC=(--image-project=ubuntu-os-cloud --image-family=ubuntu-2004-lts)
-GCE_VM_CUSTOM_IMAGE_FAMILY=ubuntu-os-docker-gpu-2004-lts
+GCE_VM_CUSTOM_IMAGE_FAMILY=ubuntu-os-docker-gpu-2004-lts-wip
+GCE_VM_CUSTOM_IMAGE=open3d-gpu-ci-base-20201228
 VM_IMAGE=open3d-gpu-ci-base-$(date +%Y%m%d)
 GCE_CI_TIMEOUT=3600 # Self delete VM after timeout (seconds)
 
@@ -126,9 +127,8 @@ create-vm)
                 --accelerator="$GCE_GPU" \
                 --maintenance-policy=TERMINATE \
                 --machine-type=$GCE_INSTANCE_TYPE \
-                --boot-disk-size=$GCE_BOOT_DISK_SIZE \
                 --boot-disk-type=$GCE_BOOT_DISK_TYPE \
-                --image-family="$GCE_VM_CUSTOM_IMAGE_FAMILY" \
+                --image="$GCE_VM_CUSTOM_IMAGE" \
                 --service-account="$GCE_GPU_CI_SA" \
                 --scopes=default,compute-rw \
                 --metadata=startup-script="\
@@ -153,7 +153,7 @@ run-ci)
             --env BUILD_TENSORFLOW_OPS=${BUILD_TENSORFLOW_OPS[$CI_CONFIG_ID]} \
             --env BUILD_PYTORCH_OPS=${BUILD_PYTORCH_OPS[$CI_CONFIG_ID]} \
             --env BUILD_RPC_INTERFACE=${BUILD_RPC_INTERFACE[$CI_CONFIG_ID]} \
-            $DC_IMAGE_TAG"
+            $DC_IMAGE_TAG test-python"
     ;;
 
 delete-image)
