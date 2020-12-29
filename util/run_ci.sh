@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
+echo "$0" "$@"
 options="$(echo "$@" | tr ' ' '|')"
 
 # Get build scripts and control environment variables
@@ -38,15 +40,18 @@ echo
 echo "Running Open3D C++ unit tests..."
 run_cpp_unit_tests
 
+echo
 if [[ "test-python" =~ ^($options)$ ]]; then
-    echo "Try importing Open3D Python package"
-    test_wheel lib/python_package/pip_package/open3d*.whl
     echo "Running Open3D Python tests..."
-    run_python_tests
-    echo
 else
     echo "Skipping Python tests..."
 fi
+echo
+echo "Try importing Open3D Python package"
+test_wheel lib/python_package/pip_package/open3d*.whl
+echo "Running Open3D Python tests..."
+run_python_tests
+echo
 
 echo "Test building a C++ example with installed Open3D..."
 test_cpp_example "${runExample:=ON}"
