@@ -37,5 +37,5 @@ ENTRYPOINT util/run_ci.sh
 # Optionally add Open3D-ML
 FROM open3d-gpu AS open3d-ml-gpu
 ARG OPEN3D_ML_ROOT
-COPY ${OPEN3D_ML_ROOT-../Open3D-ML} /root/Open3D-ML
+COPY ${OPEN3D_ML_ROOT:-../Open3D-ML} /root/Open3D-ML
 ENV OPEN3D_ML_ROOT="/root/Open3D-ML"
