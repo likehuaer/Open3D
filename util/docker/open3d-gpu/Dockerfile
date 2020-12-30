@@ -46,4 +46,4 @@ ENV PATH=/usr/local/cuda/bin:$PATH \
          NVIDIA_REQUIRE_CUDA="cuda>=10.1"
 
 WORKDIR /root/Open3D
-ENTRYPOINT util/run_ci.sh
+ENTRYPOINT /root/Open3D/util/run_ci.sh
