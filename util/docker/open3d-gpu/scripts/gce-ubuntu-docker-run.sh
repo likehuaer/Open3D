@@ -149,8 +149,8 @@ create-vm)
 clone-repo)
     gcloud compute ssh "${GCE_INSTANCE}" --zone "${GCE_INSTANCE_ZONE[$GCE_ZID]}" --command \
         "git clone --depth=1 --recurse-submodules --shallow-submodules \
-        https://github.com/intel-isl/Open3D.git && \
-        git clone --depth=1 https://github.com/intel-isl/Open3D-ML.git"
+        https://github.com/intel-isl/Open3D.git ~/Open3D/ && \
+        git clone --depth=1 https://github.com/intel-isl/Open3D-ML.git ~/Open3D-ML/"
     ;;
 
 run-ci)
@@ -163,8 +163,8 @@ run-ci)
             --env BUILD_TENSORFLOW_OPS=${BUILD_TENSORFLOW_OPS[$CI_CONFIG_ID]} \
             --env BUILD_PYTORCH_OPS=${BUILD_PYTORCH_OPS[$CI_CONFIG_ID]} \
             --env BUILD_RPC_INTERFACE=${BUILD_RPC_INTERFACE[$CI_CONFIG_ID]} \
-            --volume Open3D:/root/Open3D \
-            --volume Open3D-ML:/root/Open3D-ML \
+            --volume ~/Open3D:/root/Open3D \
+            --volume ~/Open3D-ML:/root/Open3D-ML \
             $DC_IMAGE_TAG"
     ;;
 
