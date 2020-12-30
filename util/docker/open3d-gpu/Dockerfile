@@ -1,14 +1,29 @@
-# eg: docker build --build-arg UBUNTU_VERSION=focal
+# Example build command:
+# docker build --build-arg UBUNTU_VERSION=focal -t open3d-gpu-ci-focal:latest
+# Example run command:
+#    docker run --rm --gpus all \
+#        --env TEST_PYTHON=ON \
+#        --env NPROC=4 \
+#        --env SHARED=OFF \
+#        --env BUILD_CUDA_MODULE=ON \
+#        --env BUILD_TENSORFLOW_OPS=ON \
+#        --env BUILD_PYTORCH_OPS=ON \
+#        --env BUILD_RPC_INTERFACE=ON \
+#        --volume Open3D:/root/Open3D \
+#        --volume Open3D-ML:/root/Open3D-ML \
+#        open3d-gpu-ci-focal:latest
+
 ARG UBUNTU_VERSION
 FROM ubuntu:${UBUNTU_VERSION} AS open3d-gpu
 # Persist ARG for the rest of the build
 ARG UBUNTU_VERSION
 ARG NVIDIA_DRIVER_VERSION=455
-LABEL name="open3d-dev/open3d-gpu-ci-${UBUNTU_VERSION}" \
-            vendor="open3d.org" \
-            architecture="x86_64" \
-            os="linux" \
-            maintainer="open3d-info@osvf.org"
+LABEL name="open3d-dev/open3d-gpu-ci-${UBUNTU_VERSION}"
+LABEL vendor="open3d.org"
+LABEL architecture="x86_64"
+LABEL os="linux"
+LABEL version="0.12.0"
+LABEL maintainer="open3d-info@osvf.org"
 
 ENV DEBIAN_FRONTEND=noninteractive TZ=America/Los_Angeles SUDO=command
 # Install Python 3, cmake>=3.12 and nvidia drivers (only if not installed)
@@ -30,12 +45,5 @@ ENV PATH=/usr/local/cuda/bin:$PATH \
          NVIDIA_DRIVER_CAPABILITIES="compute,utility,graphics" \
          NVIDIA_REQUIRE_CUDA="cuda>=10.1"
 
-COPY . /root/Open3D
 WORKDIR /root/Open3D
 ENTRYPOINT util/run_ci.sh
-
-# Optionally add Open3D-ML
-FROM open3d-gpu AS open3d-ml-gpu
-ARG OPEN3D_ML_ROOT
-COPY ${OPEN3D_ML_ROOT:-../Open3D-ML} /root/Open3D-ML
-ENV OPEN3D_ML_ROOT="/root/Open3D-ML"

@@ -74,9 +74,8 @@ docker-build)
     docker build -t "$DC_IMAGE_TAG" \
         -f util/docker/open3d-gpu/Dockerfile \
         --build-arg UBUNTU_VERSION="$UBUNTU_VERSION" \
-        --build-arg NVIDIA_DRIVER_VERSION="${NVIDIA_DRIVER_VERSION}" \
-        --build-arg OPEN3D_ML_ROOT="${OPEN3D_ML_ROOT}" \
-        .
+        --build-arg NVIDIA_DRIVER_VERSION="${NVIDIA_DRIVER_VERSION}"
+    .
     docker tag "$DC_IMAGE_TAG" "$DC_IMAGE_LATEST_TAG"
     ;;
 
@@ -146,6 +145,13 @@ create-vm)
     exit $((GCE_ZID >= ${#GCE_INSTANCE_ZONE[@]})) # 0 => success
     ;;
 
+clone-repo)
+    gcloud compute ssh "${GCE_INSTANCE}" --zone "${GCE_INSTANCE_ZONE[$GCE_ZID]}" --command \
+        "git clone --depth=1 --recurse-submodules --shallow-submodules \
+        https://github.com/intel-isl/Open3D.git && \
+        git clone --depth=1 https://github.com/intel-isl/Open3D-ML.git"
+    ;;
+
 run-ci)
     gcloud compute ssh "${GCE_INSTANCE}" --zone "${GCE_INSTANCE_ZONE[$GCE_ZID]}" --command \
         "sudo docker run --rm --gpus all \
@@ -156,6 +162,8 @@ run-ci)
             --env BUILD_TENSORFLOW_OPS=${BUILD_TENSORFLOW_OPS[$CI_CONFIG_ID]} \
             --env BUILD_PYTORCH_OPS=${BUILD_PYTORCH_OPS[$CI_CONFIG_ID]} \
             --env BUILD_RPC_INTERFACE=${BUILD_RPC_INTERFACE[$CI_CONFIG_ID]} \
+            --volume Open3D:/root/Open3D \
+            --volume Open3D-ML:/root/Open3D-ML \
             $DC_IMAGE_TAG"
     ;;
 
