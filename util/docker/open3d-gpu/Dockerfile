@@ -1,14 +1,18 @@
 # Example build command:
-# docker build --build-arg UBUNTU_VERSION=focal -t open3d-gpu-ci-focal:latest
+# docker build --build-arg UBUNTU_VERSION=focal \
+#   -t open3d-gpu-ci-focal:latest \
+#   -f util/docker/open3d-gpu/Dockerfile \
+#    .
 # Example run command:
 #    docker run --rm --gpus all \
 #        --env TEST_PYTHON=ON \
 #        --env NPROC=4 \
 #        --env SHARED=OFF \
 #        --env BUILD_CUDA_MODULE=ON \
+#        --env BUILD_RPC_INTERFACE=ON \
 #        --env BUILD_TENSORFLOW_OPS=ON \
 #        --env BUILD_PYTORCH_OPS=ON \
-#        --env BUILD_RPC_INTERFACE=ON \
+#        --env OPEN3D_ML_ROOT=/root/Open3D-ML \
 #        --volume Open3D:/root/Open3D \
 #        --volume Open3D-ML:/root/Open3D-ML \
 #        open3d-gpu-ci-focal:latest

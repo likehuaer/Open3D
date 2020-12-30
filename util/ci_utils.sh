@@ -321,7 +321,6 @@ build_pip_conda_package() {
 # Usage: test_wheel wheel_path
 test_wheel() {
     wheel_path="$1"
-    set +u # venv activate can trigger bash unbound variable error
     python -m venv open3d_test.venv
     # shellcheck disable=SC1091
     source open3d_test.venv/bin/activate
@@ -356,12 +355,11 @@ test_wheel() {
         echo "importing in the normal order"
         python -c "import open3d.ml.torch as o3d; import tensorflow as tf"
     fi
-    deactivate
+    deactivate open3d_test.venv # argument prevents unbound variable error
 }
 
 # Run in virtual environment
 run_python_tests() {
-    set +u # venv activate can trigger bash unbound variable error
     # shellcheck disable=SC1091
     source open3d_test.venv/bin/activate
     python -m pip install -U pytest=="$PYTEST_VER"
@@ -372,7 +370,7 @@ run_python_tests() {
         pytest_args+=(--ignore "$OPEN3D_SOURCE_ROOT"/python/test/ml_ops/)
     fi
     python -m pytest "${pytest_args[@]}"
-    deactivate
+    deactivate open3d_test.venv # argument prevents unbound variable error
 }
 
 # Use: run_unit_tests
