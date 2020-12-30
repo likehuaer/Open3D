@@ -14,6 +14,7 @@ set -e
 # GITHUB_SHA
 ## CI test matrix:
 CI_CONFIG_ID=${CI_CONFIG_ID:=0}
+CI_CONFIG_ID=${CI_CONFIG_ID%%-*} # '3-ML-bionic' -> '3'
 
 # CI configuration specification
 SHARED=(OFF ON OFF ON OFF OFF)
@@ -74,8 +75,8 @@ docker-build)
     docker build -t "$DC_IMAGE_TAG" \
         -f util/docker/open3d-gpu/Dockerfile \
         --build-arg UBUNTU_VERSION="$UBUNTU_VERSION" \
-        --build-arg NVIDIA_DRIVER_VERSION="${NVIDIA_DRIVER_VERSION}"
-    .
+        --build-arg NVIDIA_DRIVER_VERSION="${NVIDIA_DRIVER_VERSION}" \
+        .
     docker tag "$DC_IMAGE_TAG" "$DC_IMAGE_LATEST_TAG"
     ;;
 
