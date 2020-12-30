@@ -5,7 +5,6 @@
 #    .
 # Example run command:
 #    docker run --rm --gpus all \
-#        --env TEST_PYTHON=ON \
 #        --env NPROC=4 \
 #        --env SHARED=OFF \
 #        --env BUILD_CUDA_MODULE=ON \
@@ -50,4 +49,4 @@ ENV PATH=/usr/local/cuda/bin:$PATH \
          NVIDIA_REQUIRE_CUDA="cuda>=10.1"
 
 WORKDIR /root/Open3D
-ENTRYPOINT /root/Open3D/util/run_ci.sh
+ENTRYPOINT /bin/bash

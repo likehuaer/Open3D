@@ -49,7 +49,7 @@ GCE_BOOT_DISK_SIZE=32GB
 NVIDIA_DRIVER_VERSION=455 # Must be present in Ubuntu repos 20.04: {390, 418, 430, 435, 440, 450, 455}
 GCE_VM_BASE_OS=ubuntu20.04
 GCE_VM_IMAGE_SPEC=(--image-project=ubuntu-os-cloud --image-family=ubuntu-2004-lts)
-GCE_VM_CUSTOM_IMAGE_FAMILY=ubuntu-os-docker-gpu-2004-lts-wip
+GCE_VM_CUSTOM_IMAGE_FAMILY=ubuntu-os-docker-gpu-2004-lts
 GCE_VM_CUSTOM_IMAGE=open3d-gpu-ci-base-20201228
 VM_IMAGE=open3d-gpu-ci-base-$(date +%Y%m%d)
 GCE_CI_TIMEOUT=3600 # Self delete VM after timeout (seconds)
@@ -155,8 +155,7 @@ clone-repo)
 
 run-ci)
     gcloud compute ssh "${GCE_INSTANCE}" --zone "${GCE_INSTANCE_ZONE[$GCE_ZID]}" --command \
-        "sudo docker run --rm --gpus all \
-            --env TEST_PYTHON=ON \
+        "sudo docker run --detach --name open3d_gpu_ci --gpus all \
             --env NPROC=$NPROC \
             --env SHARED=${SHARED[$CI_CONFIG_ID]} \
             --env BUILD_CUDA_MODULE=${BUILD_CUDA_MODULE[$CI_CONFIG_ID]} \
@@ -166,7 +165,17 @@ run-ci)
             --env OPEN3D_ML_ROOT=/root/Open3D-ML \
             --volume ~/Open3D:/root/Open3D \
             --volume ~/Open3D-ML:/root/Open3D-ML \
-            $DC_IMAGE_TAG"
+            $DC_IMAGE_TAG; \
+            sudo docker exec -it open3d_gpu_ci util/run_ci.sh"
+    ;;
+
+run-python-ci)
+    gcloud compute ssh "${GCE_INSTANCE}" --zone "${GCE_INSTANCE_ZONE[$GCE_ZID]}" --command \
+        "sudo docker exec -it open3d_gpu_ci \
+        bash -c 'source util/ci_utils.sh; \
+            build_pip_conda_package pip; \
+            test_wheel pip_package/open3d*.whl; \
+            run_python_tests' "
     ;;
 
 delete-image)

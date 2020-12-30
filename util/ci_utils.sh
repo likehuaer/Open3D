@@ -228,8 +228,6 @@ build_all() {
     echo "build & install Open3D..."
     make VERBOSE=1 -j"$NPROC"
     make install -j"$NPROC"
-    make VERBOSE=1 install-pip-package -j"$NPROC"
-    echo
 }
 
 build_pip_conda_package() {

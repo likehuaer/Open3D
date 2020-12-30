@@ -107,9 +107,13 @@ jobs:
         run: |
           ./util/docker/open3d-gpu/scripts/gce-ubuntu-docker-run.sh clone-repo
 
-      - name: Config, build and run unit tests
+      - name: Config, build and run C++ unit tests
         run: |
           ./util/docker/open3d-gpu/scripts/gce-ubuntu-docker-run.sh run-ci
+
+      - name: Config, build and run Python unit tests
+        run: |
+          ./util/docker/open3d-gpu/scripts/gce-ubuntu-docker-run.sh run-python-ci
 
       - name: Delete VM
         if: always()

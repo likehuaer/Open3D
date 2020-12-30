@@ -37,19 +37,6 @@ echo
 echo "Running Open3D C++ unit tests..."
 run_cpp_unit_tests
 
-echo
-if [[ -v TEST_PYTHON ]] && [[ "$TEST_PYTHON" == "ON" ]]; then
-    echo "Running Open3D Python tests..."
-    echo
-    echo "Try importing Open3D Python package"
-    test_wheel lib/python_package/pip_package/open3d*.whl
-    echo "Running Open3D Python tests..."
-    run_python_tests
-    echo
-else
-    echo "Skipping Python tests..."
-fi
-
 echo "Test building a C++ example with installed Open3D..."
 test_cpp_example "${runExample:=ON}"
 echo
