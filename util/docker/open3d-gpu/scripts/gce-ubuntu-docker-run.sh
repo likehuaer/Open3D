@@ -166,12 +166,12 @@ run-ci)
             --volume ~/Open3D:/root/Open3D \
             --volume ~/Open3D-ML:/root/Open3D-ML \
             $DC_IMAGE_TAG; \
-            sudo docker exec -it open3d_gpu_ci util/run_ci.sh"
+            sudo docker exec -i open3d_gpu_ci util/run_ci.sh"
     ;;
 
 run-python-ci)
     gcloud compute ssh "${GCE_INSTANCE}" --zone "${GCE_INSTANCE_ZONE[$GCE_ZID]}" --command \
-        "sudo docker exec -it open3d_gpu_ci \
+        "sudo docker exec -i open3d_gpu_ci \
         bash -c 'source util/ci_utils.sh; \
             build_pip_conda_package pip; \
             test_wheel pip_package/open3d*.whl; \
